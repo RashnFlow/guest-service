@@ -1,66 +1,95 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# Инструкция по запуску
+Запустите контейнер
 
-## About Laravel
+```bash
+  docker-compose up -d
+```
+Подключитесь к контейнеру app
+```bash
+   docker-compose exec app bash
+```
+Запустите миграции и сервер
+```bash
+   php artisan migrate
+   php artisan serve --host=0.0.0.0 --port=8000
+```
+Теперь сервер доступен по адресу http://localhost:8000
+## API
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+#### Сущность "Гость"
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `first_name` | `string` |  Имя гостя |
+| `last_name` | `string` | Фамилия гостя |
+| `email` | `string` | Email |
+| `phone` | `string` | Телефон гостя (в формате +7) |
+| `country` | `string` | Страна |
+| `id` | `int` | id гостя |
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+#### Создание нового гостя
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+```http
+  POST  /guests
+```
 
-## Learning Laravel
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `first_name` | `string` | **Required**. Имя гостя |
+| `last_name` | `string` | **Required**. Фамилия гостя |
+| `email` | `string` | **Required**. Email |
+| `phone` | `string` | **Required**. Телефон гостя (в формате +7) |
+| `country` | `string` | Страна |
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+В ответ возвращается сущность "Гость"
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+#### Получение данных о госте
 
-## Laravel Sponsors
+```http
+  GET /guests/{id}
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `id`      | `string` | **Required**. id гостя |
 
-### Premium Partners
+В ответ возвращается сущность "Гость", если запись не найдена, то вернется
+```http
+  "error": "Запись не найдена"
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+#### Обновление данных гостя
 
-## Contributing
+```http
+  PUT/PATCH /guests/{id}
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `id`      | `string` | **Required**. id гостя |
+| `first_name` | `string` | Имя гостя |
+| `last_name` | `string` | Фамилия гостя |
+| `email` | `string` | Email |
+| `phone` | `string` | Телефон гостя (в формате +7) |
+| `country` | `string` | Страна |
 
-## Code of Conduct
+В ответ возвращается сущность "Гость", если запись не найдена, то вернется
+```http
+  "error": "Запись не найдена"
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+#### Удаление гостя
 
-## Security Vulnerabilities
+```http
+  DELETE /guests/{id}
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `id`      | `string` | **Required**. id гостя |
 
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Ничего не возвращает при успешном удалении, если запись не найдена, то вернется
+```http
+  "error": "Запись не найдена"
+```
